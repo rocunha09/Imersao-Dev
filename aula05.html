@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AluraFlix</title>
+    
+    <style>     
+        body {
+        font-family: "Roboto Mono", monospace;
+        text-align: center;
+        background-image: url("https://www.alura.com.br/assets/img/imersoes/dev-2021/dia-04-aluraflix-e-filmes.png");
+        background-color: #000000;
+        background-size: cover;
+        background-position: center top;
+        background-repeat: no-repeat;
+        }
+
+        .container {
+        text-align: center;
+        padding: 20px;
+        }
+
+        .page-title {
+        color: #ffffff;
+        margin: 0 0 5px;
+        }
+
+        .page-subtitle {
+        color: #ffffff;
+        margin-top: 5px;
+        }
+
+        .page-logo {
+        width: 200px;
+        }
+
+        .alura-logo {
+        width: 40px;
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        }
+
+        body > img {
+        margin: 0 10px;
+        }
+
+        img {
+        max-height: 250px;
+        }
+
+        input {
+        margin: 4px;
+        padding: 6px;
+        border-radius: 5px;
+        }
+
+        button {
+        margin-top: 12px;
+        padding: 4px 8px;
+        border-radius: 10px;
+        background: #ffffff;
+        }
+
+        #capas {
+        margin-top: 12px;
+        }
+
+        #listaCapas{
+        margin-top: 12px;
+        }
+
+        .capa:hover {
+        border-bottom: 14px solid rgba(28,110,164,0.45);
+        border-radius: 8px 0px 0px 0px;
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="page-title">
+          Aluraflix
+        </h1>
+        <img src="https://www.alura.com.br/assets/img/imersoes/dev-2021/logo-imersao-aluraflix.svg" class="page-logo" alt="">
+      </div>
+      <div id="form">
+          <p class="page-subtitle">
+            Digite o Nome do Filme que gostaria de inserir na sua lista
+          </p>
+          <input type="text" id="titulo" /><br>
+        
+        <p class="page-subtitle">
+            Cole a URL da capa do filme
+          </p>
+        <input type="text" id="capa" /><br>
+          <button type="submit" onclick="validaCampos()">Incluir na Lista</button>
+      </div>
+      <div id="listaCapas"></div>
+      <a href="https://alura.com.br/" target="_blank">
+        <img src="https://www.alura.com.br/assets/img/home/alura-logo.svg" alt="" class="alura-logo">
+      </a>
+      
+
+    <script>
+
+        var listaFilmes = {
+                "yesterday" : "https://br.web.img2.acsta.net/pictures/19/07/23/20/57/4907896.jpg", 
+                "A chegada" : "https://cineclick-static.flixmedia.cloud/480/69/1080x1620_1600955756.jpg", 
+                "Escola de Rock" : "https://br.web.img3.acsta.net/pictures/14/08/04/20/25/592741.jpg"
+            }
+
+            listaFilmes["Harry Potter"] = "https://br.web.img3.acsta.net/medias/nmedia/18/95/59/60/20417256.jpg"
+
+            //guarda o ultimo titulo inserido
+            var ultimoFilmeIncluido = ''
+
+            function exibirCapas(i){
+                var listaCapas = document.getElementById("listaCapas")
+                if(i == 0){
+                    listaCapas.innerHTML= ""
+
+                    for(var filme in listaFilmes){
+                    var capas = document.createElement("img")
+                    capas.setAttribute("id", "capa_"+filme)
+                    capas.setAttribute("class", "capa")
+                    capas.setAttribute("src", listaFilmes[filme])
+                    capas.style.margin = '10px'
+
+                    listaCapas.appendChild(capas)
+
+                    }
+                } 
+  
+                if(i == 1){
+                    var capa = document.createElement("img")
+                    capa.setAttribute("id", "capa_"+ultimoFilmeIncluido)
+                    capa.setAttribute("class", "capa")
+                    capa.setAttribute("src", listaFilmes[ultimoFilmeIncluido])
+                    capa.style.margin = '10px'
+
+                    listaCapas.appendChild(capa)
+                }
+                
+            }
+
+            function exibirDados(i){
+                //tudo ok exiba as capas na tela
+                if(i == 0){
+                    exibirCapas(0)
+                }
+                //exibe a capa que acabou de ser incluída na lista sem precisar rodar a lista toda
+                if(i == 1){
+                    exibirCapas(1)
+                }
+                //validação para quando tentarem incluir um titulo igual
+                if(i == 2){
+                    alert("Filme já incluído na sua lista")
+                }
+                //validação de campos
+                if(i == 3){
+                    alert("titulo ou URL não foram inseridos corretamente")
+                    
+                }
+                //caso a url não termine com .jpg
+                if(i == 4){
+                    alert("Seu link não possui uma capa ou está corrompido")
+                    
+                }
+                
+                document.getElementById("titulo").value = ""
+                document.getElementById("capa").value = ""
+            }
+
+            function validaCampos(){
+                //exemplo de validação
+                var titulo =  document.getElementById("titulo").value
+                var url = document.getElementById("capa").value
+                var existe = false
+            
+                for(var tituloExistente in listaFilmes){
+                if(titulo == tituloExistente){
+                    existe = true       
+                }     
+                }
+                
+                if(titulo != "" && url != "" && existe == false && (url.endsWith(".jpg"))){
+                //se for possível inserir, enviar o titulo e url da imagem para inclusão
+                incluirNaLista(titulo, url)    
+                
+                } else {
+                if(existe == true){
+                    exibirDados(2)
+                }
+                
+                if((titulo != "" || url != "") || (titulo == "" && url == "")){
+                    exibirDados(3)
+                
+                }
+                
+                if (!(url.endsWith(".jpg"))){
+                    exibirDados(4)
+                }
+                
+                }
+            }
+
+            function incluirNaLista(titulo, url){
+                listaFilmes[titulo] = url 
+                ultimoFilmeIncluido = titulo
+                exibirDados(1) 
+            }
+  
+            exibirDados(0)
+
+    </script>
+      
+</body>
+</html>
