@@ -198,6 +198,7 @@
         var cartaJogador = 0
 
         function sortearCarta(){
+            resultado.innerHTML = ""
             cartaMaquina = 0
             cartaJogador = 0
             while(cartaMaquina == cartaJogador){
@@ -207,101 +208,63 @@
 
             document.getElementById("btnSortear").disabled = true
             document.getElementById("btnJogar").disabled = false
-            exibirCarta("cartaJogador")
+            exibirCartaJogador()
             
             
         }
 
-        function exibirCarta(player){
+        function exibirCartaJogador(){
+            var divCartaJogador = document.getElementById("carta-jogador")
+            divCartaJogador.style.backgroundImage = `url(${cartas[cartaJogador].imagem})`
+            
             var moldura = '<img src="https://www.alura.com.br/assets/img/imersoes/dev-2021/card-super-trunfo-transparent-ajustado.png" style=" width: inherit; height: inherit; position: absolute;">'
             
-            tagOpcoes = document.createElement("div")
-            tagOpcoes.setAttribute("id", "opcoes")
-            tagOpcoes.setAttribute("class", "carta-status")
-            exibirOpcoes(player)
-
-            var nomeCarta = `<p class="carta-subtitle">${cartas[player].nome}</p>`
-
-            if(player == "cartaJogador"){
-                var divCartaJogador = document.getElementById("carta-jogador")
-                divCartaJogador.style.backgroundImage = `url(${cartas[cartaJogador].imagem})`
-                divCartaJogador.appendChild(tagOpcoes)
-                divCartaJogador.innerHTML += moldura + nomeCarta + "</div>"
-
-            } else  if(player == "cartaMaquina"){
-                var divCartaMaquina = document.getElementById("carta-maquina")
-                divCartaMaquina.style.backgroundImage = `url(${cartas[cartaMaquina].imagem})`
-                divCartaMaquina.appendChild(tagOpcoes)
-                divCartaMaquina.innerHTML += moldura + nomeCarta + "</div>"
-            }
+            var nomeCarta = `<p class="carta-subtitle">${cartas[cartaJogador].nome}</p>`
             
+            var tagOpcoes = "<div id='opcoes' class='carta-status'>"
+
+            divCartaJogador.innerHTML += moldura + nomeCarta + tagOpcoes + "</div>"
+            exibirOpcoesJogador()
         }
+        
 
-        function exibirOpcoes(player){
+
+
+        function exibirOpcoesjogador(){
             var opt = document.getElementById("opcoes")
-            var optTexto = ""
+            opt.innerHTML =""
             var checked = false
-
-            if(player == "cartaJogador"){
-                for (const atr in cartas[cartaJogador].atributos) {
-                    optTexto += "<label>"
-                    optTexto += "<input type='radio' name='atributo' value='" + atr
-                    
-                    if(checked == false){
-                        optTexto += "' checked>"
-                        checked == true
-                    } else {
-                        optTexto += "'>"
-                    }
-
-                    switch (atr) {
-                        case 'ataque':
-                        optTexto +=  atr + " = " + cartas[cartaJogador].atributos.ataque + "</label><br>"
-                            break;
-                        case 'defesa':
-                        optTexto +=  atr + " = " + cartas[cartaJogador].atributos.defesa + "</label><br>"
-                            break;
-                        case 'magia':
-                        optTexto +=  atr + " = " + cartas[cartaJogador].atributos.magia + "</label><br>"
-                            break;
-                    }
-                    opt.innerHTML = optTexto
+            
+            for (const atr in cartas[cartaJogador].atributos) {
+                var optTexto = ""
+                optTexto += "<label><input type='radio' name='atributo' value='" + atr
                 
+                if(checked == false){
+                    optTexto += "' checked>"
+                    checked == true
+                } else {
+                    optTexto += "'>"
                 }
-            } 
 
-            if(player == "cartaMaquina"){
-                for (const atr in cartas[cartaMaquina].atributos) {
-                    optTexto += "<label>"
-                    optTexto += "<input type='radio' name='atributo' value='" + atr
-                    
-                    if(checked == false){
-                        optTexto += "' checked>"
-                        checked == true
-                    } else {
-                        optTexto += "'>"
-                    }
-
-                    switch (atr) {
-                        case 'ataque':
-                        optTexto +=  atr + " = " + cartas[cartaMaquina].atributos.ataque + "</label><br>"
-                            break;
-                        case 'defesa':
-                        optTexto +=  atr + " = " + cartas[cartaMaquina].atributos.defesa + "</label><br>"
-                            break;
-                        case 'magia':
-                        optTexto +=  atr + " = " + cartas[cartaMaquina].atributos.magia + "</label><br>"
-                            break;
-                    }
-                    opt.innerHTML = optTexto
-                
+                switch (atr) {
+                    case 'ataque':
+                    optTexto +=  atr + " = " + cartas[cartaJogador].atributos.ataque + "</label><br>"
+                        break;
+                    case 'defesa':
+                    optTexto +=  atr + " = " + cartas[cartaJogador].atributos.defesa + "</label><br>"
+                        break;
+                    case 'magia':
+                   optTexto +=  atr + " = " + cartas[cartaJogador].atributos.magia + "</label><br>"
+                        break;
                 }
+                opt.innerHTML += optTexto
+                console.log(optTexto)
+            
             }
 
         }
 
         function jogar(){
-            exibirCarta("cartaMaquina")
             var valor = document.querySelector('input[name=atributo]:checked').value
             var artCartajogador = cartas[cartaJogador].atributos[valor]
             var artCartaMaquina = cartas[cartaMaquina].atributos[valor]
