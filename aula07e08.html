@@ -196,9 +196,18 @@
 
         var cartaMaquina = 0
         var cartaJogador = 0
+        var btnSortear = document.getElementById("btnSortear")
+        var btnJogar = document.getElementById("btnJogar")
+        var divCartaJogador = document.getElementById("carta-jogador")
+        var divCartaMaquina = document.getElementById("carta-maquina")
+        var reset = false
 
-        function sortearCarta(){
-            resultado.innerHTML = ""
+        function sortearCarta(){           
+            //resetando o jogo
+            if(reset == true){
+                document.location.reload(true)
+            }
+
             cartaMaquina = 0
             cartaJogador = 0
             while(cartaMaquina == cartaJogador){
@@ -206,39 +215,54 @@
                 cartaJogador = parseInt(Math.random() * cartas.length)
             }
 
-            document.getElementById("btnSortear").disabled = true
-            document.getElementById("btnJogar").disabled = false
-            exibirCartaJogador()
+            btnSortear.disabled = true
+            btnJogar.disabled = false
+            exibirCarta("jogador")
             
             
         }
 
-        function exibirCartaJogador(){
-            var divCartaJogador = document.getElementById("carta-jogador")
-            divCartaJogador.style.backgroundImage = `url(${cartas[cartaJogador].imagem})`
-            
+        function exibirCarta(player){
             var moldura = '<img src="https://www.alura.com.br/assets/img/imersoes/dev-2021/card-super-trunfo-transparent-ajustado.png" style=" width: inherit; height: inherit; position: absolute;">'
-            
-            var nomeCarta = `<p class="carta-subtitle">${cartas[cartaJogador].nome}</p>`
-            
-            var tagOpcoes = "<div id='opcoes' class='carta-status'>"
+           
+           
+            if(player == "jogador"){
+                
+                divCartaJogador.style.backgroundImage = `url(${cartas[cartaJogador].imagem})`
+                
+                
+                nomeCarta = `<p class="carta-subtitle">${cartas[cartaJogador].nome}</p>`
+                
+                tagOpcoes = "<div id='opcoes' class='carta-status'>"
+    
+                divCartaJogador.innerHTML = moldura + nomeCarta + tagOpcoes + "</div>"
+                exibirOpcoesJogador()
+                
+            }
 
-            divCartaJogador.innerHTML += moldura + nomeCarta + tagOpcoes + "</div>"
-            exibirOpcoesJogador()
+            if(player == "maquina"){
+                
+                divCartaMaquina.style.backgroundImage = `url(${cartas[cartaMaquina].imagem})`
+                
+                nomeCarta = `<p class="carta-subtitle">${cartas[cartaMaquina].nome}</p>`
+                
+                tagOpcoes = "<div id='opcoesMaquina' class='carta-status'>"
+    
+                divCartaMaquina.innerHTML = moldura + nomeCarta + tagOpcoes + "</div>"
+                exibirOpcoesMaquina()
+            }
+            
         }
         
-
-
-
-        function exibirOpcoesjogador(){
+        function exibirOpcoesJogador(){
             var opt = document.getElementById("opcoes")
-            opt.innerHTML =""
             var checked = false
-            
+            opt.innerHTML = ""
+
             for (const atr in cartas[cartaJogador].atributos) {
                 var optTexto = ""
-                optTexto += "<label><input type='radio' name='atributo' value='" + atr
-                
+                var optTexto = "<label><input type='radio' name='atributo' value='" + atr
+                    
                 if(checked == false){
                     optTexto += "' checked>"
                     checked == true
@@ -258,7 +282,32 @@
                         break;
                 }
                 opt.innerHTML += optTexto
-                console.log(optTexto)
+            
+            }
+
+        }
+
+        function exibirOpcoesMaquina(){
+            var opt = document.getElementById("opcoesMaquina")
+            var checked = false
+            opt.innerHTML = ""
+
+            for (const atr in cartas[cartaMaquina].atributos) {
+                var optTexto = ""
+                var optTexto = "<p>"
+                    
+                switch (atr) {
+                    case 'ataque':
+                    optTexto +=  atr + " = " + cartas[cartaMaquina].atributos.ataque + "</p>"
+                        break;
+                    case 'defesa':
+                    optTexto +=  atr + " = " + cartas[cartaMaquina].atributos.defesa + "</p>"
+                        break;
+                    case 'magia':
+                   optTexto +=  atr + " = " + cartas[cartaMaquina].atributos.magia + "</p>"
+                        break;
+                }
+                opt.innerHTML += optTexto
             
             }
 
@@ -266,8 +315,11 @@
 
         function jogar(){
             var valor = document.querySelector('input[name=atributo]:checked').value
+            console.log(document.querySelector('input[name=atributo]:checked'))
             var artCartajogador = cartas[cartaJogador].atributos[valor]
+            console.log(artCartajogador)
             var artCartaMaquina = cartas[cartaMaquina].atributos[valor]
+            console.log(artCartaMaquina)
             var resultado = document.getElementById("resultado")
             
             if(artCartajogador > artCartaMaquina){
@@ -282,12 +334,16 @@
                 resultado.innerHTML = "<p class='resultado-final'>Você Perdeu!</p>"
             } 
 
-            document.getElementById("btnSortear").disabled = false
-            document.getElementById("btnJogar").disabled = true
 
+            btnSortear.disabled = false
+            btnSortear.textContent = "Reset";
+            btnJogar.disabled = true
+            
+            exibirCarta("maquina")
+            
+            reset = true
         }
-    
-
+  
     </script>
 </body>
 
